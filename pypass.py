@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import PySimpleGUI as sg, random, string
+import PySimpleGUI as sg, random, string, pyperclip
 
-def generate_password(total_length, upper, lower, digits, symbols):
+def generate_password(total_length, upper, lower, digits, symbols, clipb):
     set = []
     if upper == '1':
         set.append(string.ascii_uppercase)
@@ -14,7 +14,12 @@ def generate_password(total_length, upper, lower, digits, symbols):
         set.append(string.punctuation)
     selection = ''.join(set)
     password = ''.join([random.SystemRandom().choice(selection) for _ in range(total_length)])
-    print( password)
+    print(password)
+    if clipb == '1':
+        sg.popup(password+'\nPassword copied to clipboard')
+        pyperclip.copy(password)
+    elif clipb == '0':
+        sg.popup(password)
     
 def main():
     sg.theme('dark grey 5')
@@ -24,9 +29,10 @@ def main():
                 [sg.Text('Digits'), sg.Push(), sg.Checkbox("", default=True, key="-DIGITS-")],
                 [sg.Text('Symbols'), sg.Push(), sg.Checkbox("", default=True, key="-SYMBOLS-")],
                 [sg.Text('Password Length'), sg.Push(), sg.Slider(range=(4, 128), orientation='h', size=(20, 8), default_value=8, k='-LENGTH-')],
+                [sg.Text('Copy Password to Clipboard?'), sg.Checkbox('', key="-CLIPBOARD-")],
                     [sg.Button('Generate Password'), sg.Cancel()]]      
 
-    window = sg.Window('Password Generator', layout)    
+    window = sg.Window('PyPass - Password Generator', layout)    
 
     event, values = window.read()  
 
@@ -48,9 +54,13 @@ def main():
                 symbols = "1"
             elif values["-SYMBOLS-"] == False:
                 symbols = "0"
+            if values["-CLIPBOARD-"] == True:
+                clipb = "1"
+            elif values["-CLIPBOARD-"] == False:
+                clipb = "0"
             total_length = int(values['-LENGTH-'])
             print('Creating a '+str(total_length)+' character long password')
-            generate_password(total_length, upper, lower, digits, symbols)
+            generate_password(total_length, upper, lower, digits, symbols, clipb)
             break
         if event == sg.WINDOW_CLOSED or event == 'Quit' or event == 'Cancel':
             break
