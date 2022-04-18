@@ -16,7 +16,7 @@ def generate_password(total_length, upper, lower, digits, symbols, clipb):
     password = ''.join([random.SystemRandom().choice(selection) for _ in range(total_length)])
     print(password)
     if clipb == '1':
-        sg.popup(password+'\nPassword copied to clipboard')
+        sg.popup(password+'\n\nPassword copied to clipboard')
         pyperclip.copy(password)
     elif clipb == '0':
         sg.popup(password)
@@ -76,12 +76,12 @@ def main():
             total_length = int(values['-LENGTH-'])
             print('Creating a '+str(total_length)+' character long password')
             generate_password(total_length, upper, lower, digits, symbols, clipb)
-            break
+            #break
         if event == sg.WINDOW_CLOSED or event == 'Quit' or event == 'Cancel':
             break
             window.close()
         if event == '?':
-            sg.Popup("PyPass - A Python3 Password Generator\n\nby Colditz Colligula\n\nVersion 0.2", title='About PyPass')
+            sg.Popup("PyPass - A Python3 Password Generator\n\nby Colditz Colligula\n\nVersion 0.2a", title='About PyPass')
 
 if __name__ == '__main__':
     main()
